@@ -1,12 +1,14 @@
 ﻿using MicroserviceTemplate.Service.Enumerations;
 using MicroserviceTemplate.Service.Helpers;
 using MicroserviceTemplate.Service.Logging;
+using MicroserviceTemplate.Service.Models.Request;
 using MicroserviceTemplate.Service.Resources;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.IO;
 using Nancy.Responses;
 using Nancy.TinyIoc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,8 +28,10 @@ namespace MicroserviceTemplate.Service
             {
                 if (ctx.Request.Path.StartsWith("/api"))
                 {
-                    CorrelationId.CurrentValue = GetCorrelationIdFromRequest(ctx.Request);
-                    LogRequest(ctx.Request);
+                    var requestObject = new NancyRequest(ctx.Request.Method, ctx.Request.Url, ctx.Request.Query, Utils.BodyToJObject(ctx.Request.Body));
+
+                    CorrelationId.CurrentValue = GetCorrelationIdFromRequest(requestObject);
+                    LogRequest(requestObject);
                     ctx.Request.Body.Position = 0;
                 }
                 return null;
@@ -54,7 +58,7 @@ namespace MicroserviceTemplate.Service
         }
 
         #region Helper Methods
-        private Guid GetCorrelationIdFromRequest(Request request)
+        private Guid GetCorrelationIdFromRequest(NancyRequest request)
         {
             if (request.Query["CorrelationId"] != null)
                 return Guid.Parse(request.Query["CorrelationId"].ToString());
@@ -62,59 +66,54 @@ namespace MicroserviceTemplate.Service
             return ReadCorrelationIdFromBody(request.Body);
         }
 
-        private Guid ReadCorrelationIdFromBody(RequestStream body)
+        private Guid ReadCorrelationIdFromBody(JObject jsonObject)
         {
             var result = Guid.NewGuid();
-            var jsonObject = Utils.BodyToJObject(body);
 
             if (jsonObject != null && jsonObject.Property("CorrelationId") != null)
                 return jsonObject.Property("CorrelationId").ToObject<Guid>();
 
-            //throw new Exception("CORRELATIONID_REQUIRED");
-            return result;
+
+            //TODO: Refactor and add to configuration
+            var CorrelationIdIsRequired = false;
+            if (CorrelationIdIsRequired)
+            {
+                throw new Exception("CORRELATIONID_REQUIRED");
+            }
+            else
+            {
+                return result;
+            }
         }
 
         private void LogAndFormatResponse(Response response)
         {
             var jsonObject = Utils.ResponseToJObject(response);
 
-            var responseToLog = new
-            {
-                Response = jsonObject
-            };
-
-            var responseString = JsonSerializer.ToJson(responseToLog);
+            var responseString = JsonSerializer.ToJson(jsonObject);
             Logger.Trace(responseString, correlationId: CorrelationId.CurrentValue);
 
-            if (jsonObject.Property("CorrelationId") == null)
-            {
-                response.Contents = stream =>
-                {
-                    using (var writer = new StreamWriter(stream))
-                    {
-                        jsonObject.Add("CorrelationId", CorrelationId.CurrentValue);
-                        writer.Write(jsonObject.ToString());
-                    }
-                };
-            }
+            //if (jsonObject.Property("CorrelationId") == null)
+            //{
+            //    response.Contents = stream =>
+            //    {
+            //        using (var writer = new StreamWriter(stream))
+            //        {
+            //            jsonObject.Add("CorrelationId", CorrelationId.CurrentValue);
+            //            writer.Write(jsonObject.ToString());
+            //        }
+            //    };
+            //}
 
             var errorCount = jsonObject.Property("Errors")?.Value.ToObject<List<object>>().Count ?? 0;
-            
-                if (errorCount > 0)
-                    response.StatusCode = HttpStatusCode.BadRequest;
-            }
 
-        private void LogRequest(Request request)
+            if (errorCount > 0)
+                response.StatusCode = HttpStatusCode.BadRequest;
+        }
+
+        private void LogRequest(NancyRequest request)
         {
-            var requestToLog = new
-            {
-                Method = request.Method,
-                Url = request.Path,
-                Query = request.Query,
-                Body = Utils.BodyToJObject(request.Body)
-            };
-
-            var requestString = JsonSerializer.ToJson(requestToLog);
+            var requestString = JsonSerializer.ToJson(request);
             Logger.Trace(requestString, correlationId: CorrelationId.CurrentValue);
         }
 
@@ -125,7 +124,6 @@ namespace MicroserviceTemplate.Service
 
             var errorResult = new
             {
-                CorrelationId = CorrelationId.CurrentValue,
                 Errors = new List<object> {
                     new {
                         ErrorCode = errorCode.ToString(),
@@ -133,6 +131,9 @@ namespace MicroserviceTemplate.Service
                     }
                 }
             };
+
+            var responseString = JsonSerializer.ToJson(errorResult);
+            Logger.Trace(responseString, correlationId: CorrelationId.CurrentValue);
 
             return new JsonResponse(errorResult, serializer);
         }

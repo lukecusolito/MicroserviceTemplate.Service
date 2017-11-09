@@ -104,7 +104,8 @@
     <Compile Include="Logging\Level.cs" />
     <Compile Include="Logging\LogEventModel.cs" />
     <Compile Include="Logging\NLogger.cs" />
-    <None Include="Models\BaseModel.cs" />
+    <Compile Include="Models\Error.cs" />
+    <Compile Include="Models\Request\NancyRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\LocalisationMessage.cs" />
     <Compile Include="Resources\Resource.Designer.cs">
@@ -116,7 +117,6 @@
     <Compile Include="Services\HelloWorldService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\Request\" />
     <Folder Include="Models\Response\" />
   </ItemGroup>
   <ItemGroup>
