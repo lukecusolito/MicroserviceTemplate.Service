@@ -15,7 +15,6 @@ namespace MicroserviceTemplate.Service.Services
 
         public virtual async Task<dynamic> HelloWorldPost()
         {
-            throw new System.Exception("NO!");
             return new { Value = true };
         }
 

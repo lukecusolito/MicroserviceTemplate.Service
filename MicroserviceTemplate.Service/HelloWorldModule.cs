@@ -21,7 +21,7 @@ namespace MicroserviceTemplate.Service
             //};
 
             Get["/", true] = async (x, ct) => await _helloWorldService.HelloWorld();
-            Post["/api/value", true] = async (x, ct) => await _helloWorldService.HelloWorldPost();
+            Get["/api/value", true] = async (x, ct) => await _helloWorldService.HelloWorldPost();
         }
     }
 }

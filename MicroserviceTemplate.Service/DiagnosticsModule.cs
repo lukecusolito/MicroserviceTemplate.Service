@@ -1,4 +1,5 @@
-﻿using Nancy;
+﻿using MicroserviceTemplate.Service.Helpers;
+using Nancy;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -8,14 +9,24 @@ namespace MicroserviceTemplate.Service
     {
         public DiagnosticsModule() : base("api/diagnostics")
         {
-            Get["/isalive"] = x => new { isAlive = true };
+            Get["/isalive"] = x =>
+            {
+                string microserviceName = ConfigurationHelper.Instance.MicroserviceName;
+
+                return new { MicroserviceName = microserviceName, IsAlive = true };
+            };
 
             Get["/version"] = x =>
             {
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+
                 string version = fvi.FileVersion;
-                return new { version };
+                string microserviceName = ConfigurationHelper.Instance.MicroserviceName;
+
+                // TODO: Add database connection status
+
+                return new { MicroserviceName = ConfigurationHelper.Instance.MicroserviceName, Version = version };
             };
         }
     }

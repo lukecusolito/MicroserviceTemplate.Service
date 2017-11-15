@@ -98,6 +98,7 @@
     <Compile Include="DiagnosticsModule.cs" />
     <Compile Include="Enumerations\ErrorCode.cs" />
     <Compile Include="HelloWorldModule.cs" />
+    <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\CorrelationId.cs" />
     <Compile Include="Helpers\JsonSerializer.cs" />
     <Compile Include="Helpers\Utils.cs" />
