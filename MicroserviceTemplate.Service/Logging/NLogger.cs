@@ -1,25 +1,31 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using MicroserviceTemplate.Service.Utilities.Configuration;
+using Newtonsoft.Json.Linq;
 using NLog;
 using System;
 
 namespace MicroserviceTemplate.Service.Logging
 {
-    public class NLogger
+    public class NLogger : INLogger
     {
-        private const string MicroserviceName = "MicroserviceTemplate";
-        private static readonly ILogger ClassLogger;
-        private static readonly string MachineName;
-
-        private readonly ILogger _logger;
+        private readonly string MicroserviceName;
+        private readonly string MachineName;
         private readonly string _loggerTypeName;
 
-        static NLogger()
+        private readonly IConfigurationManager _configurationManager;
+        private readonly ILogger _logger;
+        private readonly ILogger ClassLogger;
+
+        public NLogger()
         {
             ClassLogger = LogManager.GetLogger(typeof(NLogger).FullName);
             MachineName = Environment.MachineName;
         }
-        public NLogger(Type callerType = null)
+
+        public NLogger(IConfigurationManager configurationManager, Type callerType = null)
         {
+            _configurationManager = configurationManager;
+            MicroserviceName = _configurationManager.Instance.MicroserviceName;
+
             if (callerType == null)
             {
                 _loggerTypeName = typeof(NLogger).FullName;
@@ -31,10 +37,19 @@ namespace MicroserviceTemplate.Service.Logging
                 _logger = LogManager.GetLogger(_loggerTypeName);
             }
         }
+
+        public NLogger(IConfigurationManager configurationManager, ILogger logger, Type callerType = null)
+        {
+            _configurationManager = configurationManager;
+            MicroserviceName = _configurationManager.Instance.MicroserviceName;
+            _logger = logger;
+        }
+
         public void Info(string message, Exception ex = null, Guid correlationId = default(Guid))
         {
             Log(Level.Info, message, ex, correlationId);
         }
+
         public void Debug(string message, Exception ex = null, Guid correlationId = default(Guid))
         {
             Log(Level.Debug, message, ex, correlationId);

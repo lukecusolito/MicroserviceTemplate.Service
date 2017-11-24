@@ -4,6 +4,8 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace MicroserviceTemplate.Service.Helpers
 {
@@ -37,6 +39,21 @@ namespace MicroserviceTemplate.Service.Helpers
                 var str = Encoding.UTF8.GetString(memory.ToArray());
                 jsonObject = JObject.Parse(str);
             }
+
+            return jsonObject;
+        }
+
+        public static JObject BodyXmlToJObject(RequestStream body)
+        {
+            body.Position = 0;
+            JObject jsonObject = null;
+            XmlSerializer serializer = new XmlSerializer(typeof(XmlDocument));
+            try
+            {
+                var xmlDoc = serializer.Deserialize(body);
+                jsonObject = JObject.FromObject(xmlDoc);
+            }
+            catch { }
 
             return jsonObject;
         }

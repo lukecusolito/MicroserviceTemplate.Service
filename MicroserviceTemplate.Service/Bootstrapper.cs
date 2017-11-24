@@ -1,10 +1,15 @@
-﻿using MicroserviceTemplate.Service.Enumerations;
+﻿using Autofac;
+using MicroserviceTemplate.Service.Enumerations;
 using MicroserviceTemplate.Service.Helpers;
 using MicroserviceTemplate.Service.Logging;
 using MicroserviceTemplate.Service.Models.Request;
 using MicroserviceTemplate.Service.Resources;
+using MicroserviceTemplate.Service.Utilities;
+using MicroserviceTemplate.Service.Utilities.Configuration;
+using MicroserviceTemplate.Service.Utilities.Pipelines;
 using Nancy;
 using Nancy.Bootstrapper;
+using Nancy.Bootstrappers.Autofac;
 using Nancy.IO;
 using Nancy.Responses;
 using Nancy.TinyIoc;
@@ -15,23 +20,65 @@ using System.IO;
 
 namespace MicroserviceTemplate.Service
 {
-    public class Bootstrapper : DefaultNancyBootstrapper
+    public class Bootstrapper : AutofacNancyBootstrapper
     {
-        private NLogger Logger = new NLogger(typeof(Bootstrapper));
-        protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
+        protected override void ApplicationStartup(ILifetimeScope container, IPipelines pipelines)
         {
+            // No registrations should be performed in here, however you may
+            // resolve things that are needed during application startup.
+
             Nancy.Json.JsonSettings.RetainCasing = true;
         }
-        protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
+
+        protected override void ConfigureApplicationContainer(ILifetimeScope container)
         {
+            // Perform registration that should have an application lifetime
+
+            container.Update(builder =>
+            {
+                builder.RegisterType<ConfigurationManager>()
+                    .As<IConfigurationManager>()
+                    .SingleInstance();
+
+                builder.RegisterType<PipelineHelper>()
+                    .As<IPipelineHelper>()
+                    .UsingConstructor(typeof(IConfigurationManager), typeof(INLoggerFactory), typeof(ICorrelationId));
+
+                builder.RegisterType<NLogger>().As<INLogger>();
+
+                builder.RegisterType<NLoggerFactory>()
+                    .As<INLoggerFactory>();
+            });
+        }
+
+        protected override void ConfigureRequestContainer(ILifetimeScope container, NancyContext context)
+        {
+            // Perform registrations that should have a request lifetime
+
+            container.Update(builder =>
+            {
+                builder.RegisterType<CorrelationId>()
+                    .As<ICorrelationId>()
+                    .InstancePerLifetimeScope();
+            });
+        }
+
+        protected override void RequestStartup(ILifetimeScope container, IPipelines pipelines, NancyContext context)
+        {
+            // No registrations should be performed in here, however you may
+            // resolve things that are needed during request startup.
+
+            var _configurationManager = container.Resolve<IConfigurationManager>();
+            var _correlationId = container.Resolve<ICorrelationId>();
+            var _pipelineHelper = container.Resolve<IPipelineHelper>();
+
             pipelines.BeforeRequest += (ctx) =>
             {
-                if (ctx.Request.Path.StartsWith("/api"))
+                if (ctx.Request.Path.StartsWith(_configurationManager.Instance.ApiPrefix))
                 {
                     var requestObject = new NancyRequest(ctx.Request.Method, ctx.Request.Url, ctx.Request.Query, Utils.BodyToJObject(ctx.Request.Body));
-
-                    CorrelationId.CurrentValue = GetCorrelationIdFromRequest(requestObject);
-                    LogRequest(requestObject);
+                    _correlationId.CurrentValue = _pipelineHelper.GetCorrelationId(requestObject);
+                    _pipelineHelper.LogRequest(requestObject);
                     ctx.Request.Body.Position = 0;
                 }
                 return null;
@@ -39,105 +86,21 @@ namespace MicroserviceTemplate.Service
 
             pipelines.AfterRequest += (ctx) =>
             {
-                if (ctx.Request.Path.StartsWith("/api") && ctx.Response.ContentType.Contains("json"))
+                if (ctx.Request.Path.StartsWith(_configurationManager.Instance.ApiPrefix) && ctx.Response.ContentType.Contains("json"))
                 {
-                    LogAndFormatResponse(ctx.Response);
+                    _pipelineHelper.LogAndFormatResponse(ctx.Response);
                 }
             };
 
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
             {
-                Logger.Error(ex.Message, ex, CorrelationId.CurrentValue);
-                var serializer = new DefaultJsonSerializer();
-                var error = BuildErrorResponse(ex.Message, serializer);
+                _pipelineHelper.LogError(ex);
+                var error = _pipelineHelper.BuildErrorResponse(ex.Message);
                 error.StatusCode = HttpStatusCode.BadRequest;
                 return error;
             });
 
             base.RequestStartup(container, pipelines, context);
         }
-
-        #region Helper Methods
-        private Guid GetCorrelationIdFromRequest(NancyRequest request)
-        {
-            if (request.Query["CorrelationId"] != null)
-                return Guid.Parse(request.Query["CorrelationId"].ToString());
-
-            return ReadCorrelationIdFromBody(request.Body);
-        }
-
-        private Guid ReadCorrelationIdFromBody(JObject jsonObject)
-        {
-            var result = Guid.NewGuid();
-
-            if (jsonObject != null && jsonObject.Property("CorrelationId") != null)
-                return jsonObject.Property("CorrelationId").ToObject<Guid>();
-
-
-            //TODO: Refactor and add to configuration
-            var CorrelationIdIsRequired = false;
-            if (CorrelationIdIsRequired)
-            {
-                throw new Exception("CORRELATIONID_REQUIRED");
-            }
-            else
-            {
-                return result;
-            }
-        }
-
-        private void LogAndFormatResponse(Response response)
-        {
-            var jsonObject = Utils.ResponseToJObject(response);
-
-            var responseString = JsonSerializer.ToJson(jsonObject);
-            Logger.Trace(responseString, correlationId: CorrelationId.CurrentValue);
-
-            //if (jsonObject.Property("CorrelationId") == null)
-            //{
-            //    response.Contents = stream =>
-            //    {
-            //        using (var writer = new StreamWriter(stream))
-            //        {
-            //            jsonObject.Add("CorrelationId", CorrelationId.CurrentValue);
-            //            writer.Write(jsonObject.ToString());
-            //        }
-            //    };
-            //}
-
-            var errorCount = jsonObject.Property("Errors")?.Value.ToObject<List<object>>().Count ?? 0;
-
-            if (errorCount > 0)
-                response.StatusCode = HttpStatusCode.BadRequest;
-        }
-
-        private void LogRequest(NancyRequest request)
-        {
-            var requestString = JsonSerializer.ToJson(request);
-            Logger.Trace(requestString, correlationId: CorrelationId.CurrentValue);
-        }
-
-        private Response BuildErrorResponse(string message, DefaultJsonSerializer serializer)
-        {
-            var errorCode = ErrorCode.UNEXPECTED_ERROR;
-            Enum.TryParse(message, out errorCode);
-
-            var errorResult = new
-            {
-                Errors = new List<object> {
-                    new {
-                        ErrorCode = errorCode.ToString(),
-                        ErrorMessage = LocalisationMessage.GetErrorMsg(errorCode.ToString())
-                    }
-                }
-            };
-
-            var responseString = JsonSerializer.ToJson(errorResult);
-            Logger.Trace(responseString, correlationId: CorrelationId.CurrentValue);
-
-            return new JsonResponse(errorResult, serializer);
-        }
-
-        #endregion
     }
 }
