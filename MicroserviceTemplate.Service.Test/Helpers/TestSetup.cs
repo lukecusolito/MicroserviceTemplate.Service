@@ -5,10 +5,6 @@ using MicroserviceTemplate.Service.Utilities.Pipelines;
 using NLog;
 using NSubstitute;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MicroserviceTemplate.Service.Test.Helpers
 {

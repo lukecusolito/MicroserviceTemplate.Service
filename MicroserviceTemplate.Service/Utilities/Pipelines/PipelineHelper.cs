@@ -1,5 +1,4 @@
 ﻿using MicroserviceTemplate.Service.Enumerations;
-using MicroserviceTemplate.Service.Helpers;
 using MicroserviceTemplate.Service.Logging;
 using MicroserviceTemplate.Service.Models.Request;
 using MicroserviceTemplate.Service.Resources;
@@ -9,8 +8,6 @@ using Nancy.Responses;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace MicroserviceTemplate.Service.Utilities.Pipelines
 {

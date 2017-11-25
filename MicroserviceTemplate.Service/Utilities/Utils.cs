@@ -3,11 +3,10 @@ using Nancy.IO;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace MicroserviceTemplate.Service.Helpers
+namespace MicroserviceTemplate.Service.Utilities
 {
     public static class Utils
     {

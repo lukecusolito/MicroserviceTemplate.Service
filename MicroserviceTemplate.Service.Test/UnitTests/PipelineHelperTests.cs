@@ -1,7 +1,7 @@
 ﻿using MicroserviceTemplate.Service.Enumerations;
-using MicroserviceTemplate.Service.Helpers;
 using MicroserviceTemplate.Service.Logging;
 using MicroserviceTemplate.Service.Test.Helpers;
+using MicroserviceTemplate.Service.Utilities;
 using MicroserviceTemplate.Service.Utilities.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
@@ -10,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MicroserviceTemplate.Service.Test.UnitTests
 {

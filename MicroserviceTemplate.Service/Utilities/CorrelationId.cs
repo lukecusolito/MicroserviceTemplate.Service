@@ -1,7 +1,6 @@
-﻿using MicroserviceTemplate.Service.Utilities;
-using System;
+﻿using System;
 
-namespace MicroserviceTemplate.Service.Helpers
+namespace MicroserviceTemplate.Service.Utilities
 {
     public class CorrelationId : ICorrelationId
     {

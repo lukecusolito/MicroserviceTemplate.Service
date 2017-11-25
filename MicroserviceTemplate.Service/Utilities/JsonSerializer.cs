@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MicroserviceTemplate.Service.Helpers
+namespace MicroserviceTemplate.Service.Utilities
 {
     public class JsonSerializer
     {

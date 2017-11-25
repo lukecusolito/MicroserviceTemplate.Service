@@ -1,5 +1,4 @@
-﻿using MicroserviceTemplate.Service.Helpers;
-using MicroserviceTemplate.Service.Utilities.Configuration;
+﻿using MicroserviceTemplate.Service.Utilities.Configuration;
 using Nancy;
 using System.Diagnostics;
 using System.Reflection;

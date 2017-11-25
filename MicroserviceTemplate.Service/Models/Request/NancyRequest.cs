@@ -1,5 +1,4 @@
-﻿using MicroserviceTemplate.Service.Helpers;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
 namespace MicroserviceTemplate.Service.Models.Request

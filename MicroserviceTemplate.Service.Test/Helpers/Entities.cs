@@ -1,11 +1,6 @@
 ﻿using MicroserviceTemplate.Service.Models.Request;
 using MicroserviceTemplate.Service.Utilities.Configuration;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MicroserviceTemplate.Service.Test.Helpers
 {

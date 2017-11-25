@@ -1,22 +1,12 @@
 ﻿using Autofac;
-using MicroserviceTemplate.Service.Enumerations;
-using MicroserviceTemplate.Service.Helpers;
 using MicroserviceTemplate.Service.Logging;
 using MicroserviceTemplate.Service.Models.Request;
-using MicroserviceTemplate.Service.Resources;
 using MicroserviceTemplate.Service.Utilities;
 using MicroserviceTemplate.Service.Utilities.Configuration;
 using MicroserviceTemplate.Service.Utilities.Pipelines;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Autofac;
-using Nancy.IO;
-using Nancy.Responses;
-using Nancy.TinyIoc;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace MicroserviceTemplate.Service
 {
