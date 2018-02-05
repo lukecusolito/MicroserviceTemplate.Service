@@ -25,7 +25,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Log level trace reflects in the log message
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When the log level is trace
         /// Then the service logs should reflect that log level
@@ -48,7 +48,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Log level debug reflects in the log message
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When the log level is debug
         /// Then the service logs should reflect that log level
@@ -71,7 +71,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Log level info reflects in the log message
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When the log level is info
         /// Then the service logs should reflect that log level
@@ -94,7 +94,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Log level warn reflects in the log message
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When the log level is warn
         /// Then the service logs should reflect that log level
@@ -117,7 +117,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Log level error reflects in the log message
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When the log level is error
         /// Then the service logs should reflect that log level
@@ -140,7 +140,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Log level fatal reflects in the log message
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When the log level is fatal
         /// Then the service logs should reflect that log level
@@ -163,7 +163,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Message logged when no exception or correlationId passed
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When a message is supplied
         /// And there is no exception
@@ -194,7 +194,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Message and correlationId logged when no exception passed
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When a message is supplied with a correlationId
         /// And there is no exception
@@ -225,7 +225,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Message with correlationId and exception logged
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When a message is supplied with a correlationId and exception
         /// Then the logs should contain the message
@@ -255,7 +255,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Log event contains service specific properties
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given the service has requested a message to be logged
         /// When a message is supplied
         /// Then the logs should contain the ApplicationName

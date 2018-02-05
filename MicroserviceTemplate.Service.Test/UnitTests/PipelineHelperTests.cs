@@ -27,7 +27,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Get the correlation id when passed in the request
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request has been made to the service
         /// When the correlationId is supplied in the request
         /// Then the service should return extract the correlation id from the request
@@ -54,7 +54,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Get the correlation id when passed in the request body
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request has been made to the service
         /// When the correlationId is supplied in the request body
         /// Then the service should return extract the correlationId from the request body
@@ -81,7 +81,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Get the correlation id from request query when also passed in the body
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request has been made to the service
         /// When the correlationId is supplied in the request query
         /// And the correlationId is supplied in the request body
@@ -112,7 +112,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Set the correlation id when not passed in the request
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request has been made to the service
         /// When the correlationId has not been supplied to the service
         /// And a request correlation id is not required
@@ -136,7 +136,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Request fails when the correlation id is required and not passed through the request
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request has been made to the service
         /// When the correlationId has not been supplied to the service
         /// And a request correlation id is required
@@ -168,7 +168,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Response message is logged for successful responses
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request has been made to the service
         /// When the service responds
         /// And no errors have been generated
@@ -209,7 +209,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Response message is logged for responses containing errors
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request has been made to the service
         /// When the service responds
         /// And errors are attached to the response
@@ -258,7 +258,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Request message is logged
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request has been made to the service
         /// When the receives the call
         /// Then the service should log the request message
@@ -285,7 +285,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Error response message is logged and error defaults when unexpected message supplied
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request fails
         /// When an error occurs
         /// And the error message is not one expected
@@ -314,7 +314,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Error response message is logged and supplied error code returned to user
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request fails
         /// When an error occurs
         /// And the error message is not one expected
@@ -343,7 +343,7 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
         /// <summary>
         /// @Scenario: Error response message is logged and supplied error code returned to user
         /// </summary>
-        /// remarks>
+        /// <remarks>
         /// Given a request fails
         /// When an error occurs
         /// And the error message is not one expected
