@@ -11,10 +11,8 @@ namespace MicroserviceTemplate.Service
         public DiagnosticsModule(IConfigurationManager configuration) : base("api/diagnostics")
         {
             _configuration = configuration;
-
-            Get["/isalive"] = parameters => new { MicroserviceName = _configuration.Instance.MicroserviceName, IsAlive = true };
-
-            Get["/version"] = parameters =>
+            
+            Get["/status"] = parameters =>
             {
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 string version = FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
