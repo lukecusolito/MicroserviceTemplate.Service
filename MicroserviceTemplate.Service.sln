@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceTemplate.Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceTemplate.Service.Test", "MicroserviceTemplate.Service.Test\MicroserviceTemplate.Service.Test.csproj", "{A67F9DC9-3FC4-4D5D-A0C9-C9EADCDCFB1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroserviceTemplate.Service.DBMigration", "MicroserviceTemplate.Service.DBMigration\MicroserviceTemplate.Service.DBMigration.csproj", "{ECD0191E-C7B6-477E-9DD9-0D19228EAB24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A67F9DC9-3FC4-4D5D-A0C9-C9EADCDCFB1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A67F9DC9-3FC4-4D5D-A0C9-C9EADCDCFB1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A67F9DC9-3FC4-4D5D-A0C9-C9EADCDCFB1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECD0191E-C7B6-477E-9DD9-0D19228EAB24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECD0191E-C7B6-477E-9DD9-0D19228EAB24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECD0191E-C7B6-477E-9DD9-0D19228EAB24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECD0191E-C7B6-477E-9DD9-0D19228EAB24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
