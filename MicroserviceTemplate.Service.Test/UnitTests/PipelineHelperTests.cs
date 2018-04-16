@@ -363,5 +363,32 @@ namespace MicroserviceTemplate.Service.Test.UnitTests
             // Assert
             _logger.Received(1).Error(Arg.Any<string>(), Arg.Any<Exception>(), Arg.Any<Guid>());
         }
+
+        /// <summary>
+        /// @Scenario: Get the correlation id when passed in the request header
+        /// </summary>
+        /// <remarks>
+        /// Given a request has been made to the service
+        /// When the correlationId is supplied in the request header
+        /// Then the service should return extract the correlation id from the request header
+        /// </remarks>
+        [TestMethod]
+        public void GetTheCorrelationIdWhenPassedInTheRequestHeader()
+        {
+            // Arrange
+            var pipelineHelper = TestSetup.SetupPipelineHelper();
+            var expected = Guid.NewGuid();
+
+            var requestHeader = new JObject();
+            requestHeader.Add("CorrelationId", new JArray { expected.ToString() });
+
+            var nancyRequest = Entities.GenerateNancyRequest(headers: requestHeader);
+
+            // Act
+            var actual = pipelineHelper.GetCorrelationId(nancyRequest);
+
+            // Assert
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

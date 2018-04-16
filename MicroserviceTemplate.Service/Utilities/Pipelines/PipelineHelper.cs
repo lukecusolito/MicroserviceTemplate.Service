@@ -8,6 +8,7 @@ using Nancy.Responses;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MicroserviceTemplate.Service.Utilities.Pipelines
 {
@@ -107,8 +108,22 @@ namespace MicroserviceTemplate.Service.Utilities.Pipelines
 
         private Guid GetCorrelationIdFromRequest(NancyRequest request)
         {
+            var guidParsed = false;
+            Guid correlationId = Guid.Empty;
+
             if (request.Query["CorrelationId"] != null)
-                return Guid.Parse(request.Query["CorrelationId"].ToString());
+                guidParsed = Guid.TryParse(request.Query["CorrelationId"].ToString(), out correlationId);
+
+            if (!guidParsed && request.Header?.Property("CorrelationId") != null)
+                guidParsed = Guid.TryParse(request.Header.Property("CorrelationId")?.Value?
+                    .FirstOrDefault(x => 
+                        !string.IsNullOrWhiteSpace($"{x}") && 
+                        $"{x}" != $"{Guid.Empty}")?
+                    .ToString(),
+                out correlationId);
+
+            if (guidParsed)
+                return correlationId;
 
             return ReadCorrelationIdFromBody(request.Body);
         }

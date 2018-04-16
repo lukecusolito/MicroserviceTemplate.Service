@@ -2,6 +2,7 @@
 using Nancy.IO;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -55,6 +56,20 @@ namespace MicroserviceTemplate.Service.Utilities
             catch { }
 
             return jsonObject;
+        }
+        public static JObject RequestHeadersToJObject(RequestHeaders headers)
+        {
+            if (headers == null)
+                return null;
+
+            var jsonHeaders = new JObject();      
+            
+            foreach(var head in headers)
+            {
+                jsonHeaders.Add(head.Key, new JArray { head.Value });
+            }
+            
+            return jsonHeaders;
         }
     }
 }

@@ -7,11 +7,16 @@ using MicroserviceTemplate.Service.Utilities.Pipelines;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Autofac;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MicroserviceTemplate.Service
 {
     public class Bootstrapper : AutofacNancyBootstrapper
     {
+        private const string pipelineApiPath = "/api";
         protected override void ApplicationStartup(ILifetimeScope container, IPipelines pipelines)
         {
             // No registrations should be performed in here, however you may
@@ -63,17 +68,20 @@ namespace MicroserviceTemplate.Service
 
             pipelines.BeforeRequest += (ctx) =>
             {
-                var requestObject = new NancyRequest(ctx.Request.Method, ctx.Request.Url, ctx.Request.Query, Utils.BodyToJObject(ctx.Request.Body));
-                _correlationId.CurrentValue = _pipelineHelper.GetCorrelationId(requestObject);
-                _pipelineHelper.LogRequest(requestObject);
-                ctx.Request.Body.Position = 0;
+                if (ctx.Request.Path.StartsWith(pipelineApiPath))
+                {
+                    var requestObject = new NancyRequest(ctx.Request.Method, ctx.Request.Url, ctx.Request.Query, Utils.BodyToJObject(ctx.Request.Body), Utils.RequestHeadersToJObject(ctx.Request.Headers));
+                    _correlationId.CurrentValue = _pipelineHelper.GetCorrelationId(requestObject);
+                    _pipelineHelper.LogRequest(requestObject);
+                    ctx.Request.Body.Position = 0;
+                }
 
                 return null;
             };
 
             pipelines.AfterRequest += (ctx) =>
             {
-                if (ctx.Response.ContentType.Contains("json"))
+                if (ctx.Request.Path.StartsWith(pipelineApiPath) && ctx.Response.ContentType.Contains("json"))
                 {
                     _pipelineHelper.LogAndFormatResponse(ctx.Response);
                 }

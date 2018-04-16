@@ -14,12 +14,13 @@ namespace MicroserviceTemplate.Service.Test.Helpers
             };
         }
 
-        public static NancyRequest GenerateNancyRequest(string method = "", string url = "", JObject query = null, JObject body = null)
+        public static NancyRequest GenerateNancyRequest(string method = "", string url = "", JObject query = null, JObject body = null, JObject headers = null)
         {
             query = query != null ? query : new JObject();
             body = body != null ? body : new JObject();
+            headers = headers != null ? headers : new JObject();
 
-            return new NancyRequest(method, url, query, body);
+            return new NancyRequest(method, url, query, body, headers);
         }
     }
 }
