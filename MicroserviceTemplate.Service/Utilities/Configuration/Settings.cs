@@ -9,7 +9,6 @@ namespace MicroserviceTemplate.Service.Utilities.Configuration
     {
         public string MicroserviceName { get; set; }
         public bool RequestCorrelationIdIsRequired { get; set; }
-        public string ApiPrefix { get; set; }
         public string ApplicationName { get; set; }
     }
 }

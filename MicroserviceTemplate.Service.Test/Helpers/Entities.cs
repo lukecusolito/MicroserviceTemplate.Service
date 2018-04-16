@@ -10,8 +10,6 @@ namespace MicroserviceTemplate.Service.Test.Helpers
         {
             return new Settings
             {
-                ApiPrefix = "/api",
-                MicroserviceName = "TestService",
                 RequestCorrelationIdIsRequired = false
             };
         }
