@@ -7,10 +7,6 @@ using MicroserviceTemplate.Service.Utilities.Pipelines;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Autofac;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MicroserviceTemplate.Service
 {
