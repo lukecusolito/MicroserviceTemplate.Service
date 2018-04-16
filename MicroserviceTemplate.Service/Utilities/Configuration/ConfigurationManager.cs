@@ -40,9 +40,9 @@ namespace MicroserviceTemplate.Service.Utilities.Configuration
                 throw new NullReferenceException("Unable to access appsettings");
 
             _settings = new Settings();
-            _settings.MicroserviceName = appSettings["MicroserviceName"];
+            _settings.MicroserviceName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+            _settings.ApplicationName = System.Web.Hosting.HostingEnvironment.SiteName;
             _settings.RequestCorrelationIdIsRequired = bool.Parse(appSettings["RequestCorrelationIdIsRequired"]);
-            _settings.ApiPrefix = appSettings["ApiPrefix"];
         }
 
         #endregion

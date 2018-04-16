@@ -7,8 +7,9 @@ namespace MicroserviceTemplate.Service.Logging
 {
     public class NLogger : INLogger
     {
-        private readonly string MicroserviceName;
-        private readonly string MachineName;
+        private readonly string microserviceName;
+        private readonly string applicationName;
+        private readonly string machineName;
         private readonly string _loggerTypeName;
 
         private readonly IConfigurationManager _configurationManager;
@@ -18,13 +19,14 @@ namespace MicroserviceTemplate.Service.Logging
         public NLogger()
         {
             ClassLogger = LogManager.GetLogger(typeof(NLogger).FullName);
-            MachineName = Environment.MachineName;
+            machineName = Environment.MachineName;
         }
 
         public NLogger(IConfigurationManager configurationManager, Type callerType = null)
         {
             _configurationManager = configurationManager;
-            MicroserviceName = _configurationManager.Instance.MicroserviceName;
+            microserviceName = _configurationManager.Instance.MicroserviceName;
+            applicationName = _configurationManager.Instance.ApplicationName;
 
             if (callerType == null)
             {
@@ -41,7 +43,8 @@ namespace MicroserviceTemplate.Service.Logging
         public NLogger(IConfigurationManager configurationManager, ILogger logger, Type callerType = null)
         {
             _configurationManager = configurationManager;
-            MicroserviceName = _configurationManager.Instance.MicroserviceName;
+            microserviceName = _configurationManager.Instance.MicroserviceName;
+            applicationName = _configurationManager.Instance.ApplicationName;
             _logger = logger;
         }
 
@@ -80,14 +83,14 @@ namespace MicroserviceTemplate.Service.Logging
         {
             var logEventModel = new LogEventModel
             {
-                MachineName = MachineName,
-                ApplicationName = MicroserviceName,
+                MachineName = machineName,
+                ApplicationName = applicationName,
                 CorrelationId = correlationId,
                 Exception = ex == null ? string.Empty : ex.ToString(),
                 Level = level,
                 LoggerSource = _loggerTypeName,
                 Message = message,
-                MicroserviceName = MicroserviceName,
+                MicroserviceName = microserviceName,
                 TimeStamp = DateTime.Now
             };
             Log(logEventModel);

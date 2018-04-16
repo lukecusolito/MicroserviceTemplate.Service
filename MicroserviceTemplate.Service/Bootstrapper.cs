@@ -57,26 +57,23 @@ namespace MicroserviceTemplate.Service
         {
             // No registrations should be performed in here, however you may
             // resolve things that are needed during request startup.
-
-            var _configurationManager = container.Resolve<IConfigurationManager>();
+            
             var _correlationId = container.Resolve<ICorrelationId>();
             var _pipelineHelper = container.Resolve<IPipelineHelper>();
 
             pipelines.BeforeRequest += (ctx) =>
             {
-                if (ctx.Request.Path.StartsWith(_configurationManager.Instance.ApiPrefix))
-                {
-                    var requestObject = new NancyRequest(ctx.Request.Method, ctx.Request.Url, ctx.Request.Query, Utils.BodyToJObject(ctx.Request.Body));
-                    _correlationId.CurrentValue = _pipelineHelper.GetCorrelationId(requestObject);
-                    _pipelineHelper.LogRequest(requestObject);
-                    ctx.Request.Body.Position = 0;
-                }
+                var requestObject = new NancyRequest(ctx.Request.Method, ctx.Request.Url, ctx.Request.Query, Utils.BodyToJObject(ctx.Request.Body));
+                _correlationId.CurrentValue = _pipelineHelper.GetCorrelationId(requestObject);
+                _pipelineHelper.LogRequest(requestObject);
+                ctx.Request.Body.Position = 0;
+
                 return null;
             };
 
             pipelines.AfterRequest += (ctx) =>
             {
-                if (ctx.Request.Path.StartsWith(_configurationManager.Instance.ApiPrefix) && ctx.Response.ContentType.Contains("json"))
+                if (ctx.Response.ContentType.Contains("json"))
                 {
                     _pipelineHelper.LogAndFormatResponse(ctx.Response);
                 }
